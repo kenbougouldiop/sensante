@@ -100,6 +100,7 @@ def predict(patient: PatientInput):
 
     # 5. Generer la recommandation
     messages = {
+        "paludisme": "Suspicion de paludisme. Consultez rapidement.",
         "palu": "Suspicion de paludisme. Consultez rapidement.",
         "grippe": "Suspicion de grippe. Repos et hydratation.",
         "typh": "Suspicion de typhoide. Consultation necessaire.",
@@ -113,3 +114,28 @@ def predict(patient: PatientInput):
         confiance=confiance,
         message=messages.get(diagnostic, "Consultez un medecin."),
     )
+
+
+@app.get("/model-info")
+def model_info():
+    """Retourne des informations sur le modele charge."""
+    model_type = type(model).__name__
+    n_trees = getattr(model, "n_estimators", None)
+    classes = list(getattr(model, "classes_", []))
+    n_features = getattr(model, "n_features_in_", None)
+    return {
+        "type": model_type,
+        "n_trees": n_trees,
+        "classes": classes,
+        "n_features": n_features,
+    }
+from fastapi.middleware.cors import CORSMiddleware
+# Autoriser les requetes depuis le frontend
+app.add_middleware(
+CORSMiddleware,
+allow_origins=["*"],
+# En dev : tout accepter
+allow_credentials=True,
+allow_methods=["*"],
+allow_headers=["*"],
+)
