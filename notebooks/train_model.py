@@ -118,23 +118,91 @@ sexe_enc = le_sexe_loaded.transform([nouveau_patient['sexe']])[0]
 region_enc = le_region_loaded.transform([nouveau_patient['region']])[0]
 # Preparer le vecteur de features
 features = [
-nouveau_patient['age'],
-sexe_enc,
-nouveau_patient['temperature'],
-nouveau_patient['tension_sys'],
-int(nouveau_patient['toux']),
-int(nouveau_patient['fatigue']),
-int(nouveau_patient['maux_tete']),
-region_enc
+    nouveau_patient['age'],
+    sexe_enc,
+    nouveau_patient['temperature'],
+    nouveau_patient['tension_sys'],
+    int(nouveau_patient['toux']),
+    int(nouveau_patient['fatigue']),
+    int(nouveau_patient['maux_tete']),
+    region_enc
 ]
 # Predire
-diagnostic = model_loaded.predict([features])[0]
-probas = model_loaded.predict_proba([features])[0]
+patient_df = pd.DataFrame([features], columns=feature_cols)
+diagnostic = model_loaded.predict(patient_df)[0]
+probas = model_loaded.predict_proba(patient_df)[0]
 proba_max = probas.max()
 print(f"\n--- Resultat du pre-diagnostic---")
 print(f"Patient : {nouveau_patient['sexe']}, {nouveau_patient['age']} ans")
 print(f"Diagnostic : {diagnostic}")
 print(f"Probabilite : {proba_max:.1%}")
 print(f"\nProbabilites par classe :")
-for classe, proba in zip(model_loaded.classes_, probas):bar = '#' * int(proba * 30)
-print(f" {classe:8s} : {proba:.1%} {bar}")
+for classe, proba in zip(model_loaded.classes_, probas):
+    bar = '#' * int(proba * 30)
+    print(f" {classe:8s} : {proba:.1%} {bar}")
+importances = model.feature_importances_
+for name, imp in sorted(zip(feature_cols, importances),
+        key=lambda x: x[1], reverse=True):
+    print(f" {name:20s} : {imp:.3f}")
+
+# Tester avec 3 autres patients
+test_patients = [
+    {
+        'nom': 'Jeune sans symptômes',
+        'age': 20,
+        'sexe': 'M',
+        'temperature': 36.5,
+        'tension_sys': 120,
+        'toux': False,
+        'fatigue': False,
+        'maux_tete': False,
+        'region': 'Dakar'
+    },
+    {
+        'nom': 'Adulte avec forte fièvre',
+        'age': 45,
+        'sexe': 'F',
+        'temperature': 40.2,
+        'tension_sys': 110,
+        'toux': False,
+        'fatigue': True,
+        'maux_tete': True,
+        'region': 'Diourbel'
+    },
+    {
+        'nom': 'Patient âgé avec toux',
+        'age': 75,
+        'sexe': 'M',
+        'temperature': 38.3,
+        'tension_sys': 130,
+        'toux': True,
+        'fatigue': False,
+        'maux_tete': False,
+        'region': 'Kaolack'
+    }
+]
+print("\n--- Predictions pour 3 patients tests ---")
+for patient in test_patients:
+    sexe_enc = le_sexe_loaded.transform([patient['sexe']])[0]
+    region_enc = le_region_loaded.transform([patient['region']])[0]
+    features = [
+        patient['age'],
+        sexe_enc,
+        patient['temperature'],
+        patient['tension_sys'],
+        int(patient['toux']),
+        int(patient['fatigue']),
+        int(patient['maux_tete']),
+        region_enc
+    ]
+    patient_df = pd.DataFrame([features], columns=feature_cols)
+    diagnostic = model_loaded.predict(patient_df)[0]
+    probas = model_loaded.predict_proba(patient_df)[0]
+    print(f"\nPatient test : {patient['nom']}")
+    print(f"  age={patient['age']}, sexe={patient['sexe']}, temp={patient['temperature']}, "
+          f"toux={patient['toux']}, fatigue={patient['fatigue']}, maux_tete={patient['maux_tete']}")
+    print(f"  Diagnostic prédit : {diagnostic}")
+    print("  Probabilités :")
+    for classe, proba in zip(model_loaded.classes_, probas):
+        bar = '#' * int(proba * 30)
+        print(f"   {classe:8s} : {proba:.1%} {bar}")
