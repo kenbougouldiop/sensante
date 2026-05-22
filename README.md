@@ -54,3 +54,18 @@ Ken Bougoul DIOP - L2 GLSI - ESP/UCAD
 
 ## Cours
 Intégration de Modèles IA - Dr. El Hadji Bassirou TOURE
+---
+title: SénSanté
+emoji: 🏥
+colorFrom: green
+colorTo: blue
+sdk: gradio
+sdk_version: "4.44.0"
+app_file: api/main.py
+pinned: false
+---
+
+# SénSanté - Prédiction de Maladies
+
+Application de machine learning pour la prédiction de maladies à partir de données médicales.
+Projet académique — IMA02, ESP UCAD Dakar.
