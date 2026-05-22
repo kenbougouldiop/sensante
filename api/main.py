@@ -10,6 +10,8 @@ import numpy as np
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from groq import Groq
 from pydantic import BaseModel, Field
 
@@ -244,3 +246,9 @@ def model_info() -> dict[str, object]:
         "classes": list(getattr(model, "classes_", [])),
         "n_features": getattr(model, "n_features_in_", None),
     }
+app.mount("/static", StaticFiles(directory=ROOT / "frontend"), name="static")
+
+@app.get("/")
+def serve_frontend() -> FileResponse:
+    """Servir la page d'accueil du frontend."""
+    return FileResponse(ROOT / "frontend" / "index.html")

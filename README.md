@@ -41,8 +41,24 @@ uvicorn api.main:app --reload
 Puis ouvrez `http://127.0.0.1:8000/docs` pour tester l'API.
 
 ## Utiliser le frontend
-Ouvrez `frontend/index.html` dans un navigateur.
-Le formulaire envoie les symptômes au service FastAPI.
+Ouvrez `http://127.0.0.1:8000` dans un navigateur après avoir démarré l'API.
+Le frontend est servi par FastAPI et utilise des appels relatifs vers `/predict` et `/explain`.
+
+## Docker
+1. Construisez l'image :
+   ```bash
+   docker build -t sensante .
+   ```
+2. Lancez le conteneur :
+   ```bash
+   docker run -p 8000:8000 -e GROQ_API_KEY=your_key sensante
+   ```
+3. Ouvrez `http://127.0.0.1:8000`.
+
+## Déploiement Hugging Face Spaces
+- Le projet est prêt pour un Space Docker.
+- Ajoutez `GROQ_API_KEY` comme secret dans Settings du Space.
+- Poussez sur le remote Hugging Face et le build se fera automatiquement.
 
 ## Notes
 - `models/` n'est pas versionné dans Git.
@@ -55,17 +71,3 @@ Ken Bougoul DIOP - L2 GLSI - ESP/UCAD
 ## Cours
 Intégration de Modèles IA - Dr. El Hadji Bassirou TOURE
 ---
-title: {{title}}
-emoji: {{emoji}}
-colorFrom: {{colorFrom}}
-colorTo: {{colorTo}}
-sdk: {{sdk}}
-sdk_version: "{{sdkVersion}}"
-{{#pythonVersion}}
-python_version: "{{pythonVersion}}"
-{{/pythonVersion}}
-app_file: app.py
-pinned: false
----
-
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
