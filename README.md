@@ -49,6 +49,14 @@ Le formulaire envoie les symptômes au service FastAPI.
 - `data/patients_dakar.csv` contient les diagnostics, régions et symptômes.
 - Les scripts de `notebooks/` sont organisés en fonctions avec un point d'entrée `main()`.
 
+# SenSante
+Assistant pre-diagnostic medical pour le Senegal.
+## Demo en ligne
+https://pectinecellulose-sensante.hf.space
+## Stack- scikit-learn (modele ML)- FastAPI (API REST)- Tailwind CSS (frontend responsive)- Groq / Llama 3 (explication LLM)- Docker (conteneurisation)
+## Auteur
+Votre Nom- L2 GLSI- ESP/UCAD- 2026
+
 ## Auteur
 Ken Bougoul DIOP - L2 GLSI - ESP/UCAD
 
